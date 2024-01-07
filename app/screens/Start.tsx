@@ -2,7 +2,13 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import tw from 'twrnc';
 
-import {Button, Input, WelcomeHeader} from '../components';
+import {
+  AuthProviderButton,
+  Button,
+  Divider,
+  Input,
+  WelcomeHeader,
+} from '../components';
 import {ArrowRight} from 'iconoir-react-native';
 
 function Start() {
@@ -17,9 +23,9 @@ function Start() {
           label={'Mobile Phone Number'}
         />
         <Button appearance="Filled" label="Send Code" icon={<ArrowRight />} />
-        <Button appearance="Outline" label="Send Code" icon={<ArrowRight />} />
-        <Button appearance="Link" label="Send Code" icon={<ArrowRight />} />
-        <Button appearance="Subtle" label="Send Code" icon={<ArrowRight />} />
+        <Divider label="Social Accounts" />
+        <AuthProviderButton provider="Apple" />
+        <AuthProviderButton provider="Google" />
       </View>
     </View>
   );
@@ -28,7 +34,8 @@ function Start() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingTop: 24,
+    gap: 8,
+    paddingTop: 18,
   },
 });
 

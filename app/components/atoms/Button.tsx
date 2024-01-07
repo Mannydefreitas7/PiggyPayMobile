@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     borderRadius: 8,
-    marginVertical: 8,
   },
 });
 
