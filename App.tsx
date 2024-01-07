@@ -1,22 +1,17 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 import {Start} from './app/screens';
 import tailwind, {useDeviceContext} from 'twrnc';
+import {NativeBaseProvider} from 'native-base';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
   useDeviceContext(tailwind);
 
-  return <Start />;
+  return (
+    <NativeBaseProvider>
+      <Start />
+    </NativeBaseProvider>
+  );
 }
 
 export default App;

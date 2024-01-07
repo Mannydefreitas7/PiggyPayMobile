@@ -8,15 +8,23 @@ import {
   useColorScheme,
 } from 'react-native';
 import tailwind from 'twrnc';
+import {LoadingSpinner} from '..';
 
 type IButtonProps = {
   label?: string;
   icon?: ReactNode;
   appearance: 'Filled' | 'Outline' | 'Subtle' | 'Link';
   children?: ReactNode;
+  loading?: Boolean;
 };
 
-function Button({label, icon, appearance = 'Filled', children}: IButtonProps) {
+function Button({
+  label,
+  icon,
+  appearance = 'Filled',
+  loading = false,
+  children,
+}: IButtonProps) {
   const theme = useColorScheme();
   const getAppearance = (): {
     container: string;
@@ -97,7 +105,10 @@ function Button({label, icon, appearance = 'Filled', children}: IButtonProps) {
                 ? tailwind.color(getAppearance().iconLight)
                 : tailwind.color(getAppearance().iconDark),
           }}>
-          {icon && <View>{icon}</View>}
+          {!loading && icon && <View>{icon}</View>}
+          {loading && (
+            <LoadingSpinner color={tailwind.color(getAppearance().iconLight)} />
+          )}
         </IconoirProvider>
       </View>
     </TouchableOpacity>
