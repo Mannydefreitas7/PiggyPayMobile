@@ -18,10 +18,16 @@ function Divider({label, width = 1.5}: IDividerProps) {
     />
   );
   return (
-    <View style={[styles.container, {minHeight: label ? 32 : 0}]}>
+    <View style={[styles.container, {minHeight: label ? 24 : 0}]}>
       {renderLine()}
       {label && (
-        <Text style={[styles.text, tailwind.style('text-black')]}>{label}</Text>
+        <Text
+          style={[
+            styles.text,
+            tailwind.style('text-neutral-300 dark:text-neutral-700'),
+          ]}>
+          {label}
+        </Text>
       )}
       {label && renderLine()}
     </View>
@@ -34,6 +40,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
+    fontWeight: '700',
   },
   container: {
     flexDirection: 'row',
