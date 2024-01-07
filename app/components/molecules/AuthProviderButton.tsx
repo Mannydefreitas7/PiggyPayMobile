@@ -12,10 +12,12 @@ import tailwind from 'twrnc';
 import googleLogoColor from './../../assets/images/google-logo-color.png';
 import appleLogoWhite from './../../assets/images/apple-logo-white.png';
 import appleLogoBlack from './../../assets/images/apple-logo-black.png';
+import {LoadingSpinner} from '..';
 
 type IAuthProviderButtonProps = {
   provider: 'Google' | 'Apple';
   children?: ReactNode;
+  loading?: Boolean;
 };
 
 type IAuthProviderButton = {
@@ -23,7 +25,10 @@ type IAuthProviderButton = {
   logo: ImageSourcePropType | undefined;
 };
 
-function AuthProviderButton({provider}: IAuthProviderButtonProps) {
+function AuthProviderButton({
+  provider,
+  loading = false,
+}: IAuthProviderButtonProps) {
   const theme = useColorScheme();
 
   const getAuthButtonType = (): IAuthProviderButton => {
@@ -59,10 +64,20 @@ function AuthProviderButton({provider}: IAuthProviderButtonProps) {
           ),
         ]}>
         <Image resizeMode="contain" style={styles.image} source={logo} />
-        <Text
-          style={[styles.text, tailwind.style('text-black dark:text-white')]}>
-          {label}
-        </Text>
+        {loading ? (
+          <LoadingSpinner
+            color={
+              theme === 'light'
+                ? tailwind.color('text-black')
+                : tailwind.color('text-white')
+            }
+          />
+        ) : (
+          <Text
+            style={[styles.text, tailwind.style('text-black dark:text-white')]}>
+            {label}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );

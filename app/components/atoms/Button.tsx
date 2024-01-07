@@ -4,19 +4,20 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableOpacityProps,
   View,
   useColorScheme,
 } from 'react-native';
 import tailwind from 'twrnc';
 import {LoadingSpinner} from '..';
 
-type IButtonProps = {
+interface IButtonProps extends TouchableOpacityProps {
   label?: string;
   icon?: ReactNode;
   appearance: 'Filled' | 'Outline' | 'Subtle' | 'Link';
   children?: ReactNode;
   loading?: Boolean;
-};
+}
 
 function Button({
   label,
@@ -24,6 +25,7 @@ function Button({
   appearance = 'Filled',
   loading = false,
   children,
+  ...props
 }: IButtonProps) {
   const theme = useColorScheme();
   const getAppearance = (): {
@@ -87,7 +89,7 @@ function Button({
   };
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity {...props}>
       <View
         style={[
           styles.container,
@@ -106,11 +108,19 @@ function Button({
                 : tailwind.color(getAppearance().iconDark),
           }}>
           {!loading && icon && <View>{icon}</View>}
+
           {loading && (
-            <LoadingSpinner color={tailwind.color(getAppearance().iconLight)} />
+            <LoadingSpinner
+              color={
+                theme === 'light'
+                  ? tailwind.color(getAppearance().iconLight)
+                  : tailwind.color(getAppearance().iconDark)
+              }
+            />
           )}
         </IconoirProvider>
       </View>
+      {}
     </TouchableOpacity>
   );
 }

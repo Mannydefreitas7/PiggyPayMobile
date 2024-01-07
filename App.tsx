@@ -1,16 +1,26 @@
 import React from 'react';
 
-import {Start} from './app/screens';
+import {SignUp, Start} from './app/screens';
 import tailwind, {useDeviceContext} from 'twrnc';
 import {NativeBaseProvider} from 'native-base';
-
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {RootStackParamList} from './@types/navigation.type';
 function App(): React.JSX.Element {
   useDeviceContext(tailwind);
+  const Stack = createNativeStackNavigator<RootStackParamList>();
 
   return (
-    <NativeBaseProvider>
-      <Start />
-    </NativeBaseProvider>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Start"
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Start" component={Start} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

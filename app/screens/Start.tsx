@@ -10,11 +10,13 @@ import {
   WelcomeHeader,
 } from '../components';
 import {ArrowRight} from 'iconoir-react-native';
+import {StartProps} from '../../@types/navigation.type';
 
-function Start() {
+function Start({navigation}: StartProps) {
   return (
     <View style={tw.style('bg-white dark:bg-neutral-950', {flex: 1})}>
       <WelcomeHeader />
+
       <View style={styles.container}>
         <Input
           error={false}
@@ -22,7 +24,12 @@ function Start() {
           type="tel"
           label={'Mobile Phone Number'}
         />
-        <Button appearance="Filled" label="Send Code" icon={<ArrowRight />} />
+        <Button
+          onPress={() => navigation.navigate('SignUp')}
+          appearance="Filled"
+          label="Send Code"
+          icon={<ArrowRight />}
+        />
         <Divider label="Social Accounts" />
         <AuthProviderButton provider="Apple" />
         <AuthProviderButton provider="Google" />
@@ -34,7 +41,7 @@ function Start() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    gap: 8,
+    gap: 12,
     paddingTop: 18,
   },
 });

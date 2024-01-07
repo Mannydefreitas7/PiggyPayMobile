@@ -13,7 +13,6 @@ import {
 import {
   IconoirProvider,
   Mail,
-  Number1Square,
   Phone,
   Search,
   XmarkCircleSolid,
@@ -26,12 +25,19 @@ type InputProps = {
   leading?: ReactNode;
   trailing?: ReactNode;
   type: InputModeOptions | undefined;
-  hintMessage?: string;
-  error: Boolean;
+  hintMessage?: string | ReactNode;
+  hintLink?: string;
+  error?: Boolean;
   label: string;
 };
 
-function Input({type, label, error = false, hintMessage}: InputProps) {
+function Input({
+  type,
+  label,
+  error = false,
+  hintMessage,
+  hintLink,
+}: InputProps) {
   const [text, onChangeText] = React.useState('');
   const [focus, setFocus] = React.useState(Boolean);
   const animatedValue = useRef(new Animated.Value(0));
@@ -39,9 +45,6 @@ function Input({type, label, error = false, hintMessage}: InputProps) {
 
   const renderIcon = () => {
     switch (type) {
-      case 'decimal':
-      case 'numeric':
-        return <Number1Square />;
       case 'email':
         return <Mail />;
       case 'tel':
@@ -183,11 +186,19 @@ function Input({type, label, error = false, hintMessage}: InputProps) {
             <Text
               style={[
                 styles.hintText,
-                tailwind.style('text-neutral-400 dark:text-neutral-600'),
+                tailwind.style('text-neutral-400 dark:text-neutral-500'),
                 tailwind.style(error && 'text-red-600 dark:text-red-400'),
               ]}>
               {hintMessage}
             </Text>
+            {hintLink && (
+              <TouchableOpacity>
+                <Text
+                  style={[styles.hintLink, tailwind.style('text-indigo-700')]}>
+                  {hintLink}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -236,10 +247,15 @@ const styles = StyleSheet.create({
   },
   hintContainer: {
     marginTop: 6,
+    gap: 4,
     marginLeft: 8,
+    flexDirection: 'row',
+  },
+  hintLink: {
+    fontSize: 14,
   },
   hintText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#565656',
   },
 });
