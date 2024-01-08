@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View, useColorScheme} from 'react-native';
 import tw from 'twrnc';
-import PhoneNumber from 'libphonenumber-js';
+import PhoneNumber, { parsePhoneNumber } from 'libphonenumber-js';
 import {
   AuthProviderButton,
   Button,
@@ -11,11 +11,36 @@ import {
 } from '../components';
 import {ArrowRight} from 'iconoir-react-native';
 import {StartProps} from '../../@types/navigation.type';
+import { sendCode } from '../services/authentication.service';
+import supabase from '../lib/supabase';
 
 function Start({navigation}: StartProps) {
   const theme = useColorScheme();
 
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+
+  const fetch = useCallback(async () => {
+      const user = await supabase.auth.getUser();
+      console.log(user);
+  },[])
+
+  useEffect(() => {
+
+   fetch();
+
+  })
+
+  const handleEnterCode = async () => {
+   try {
+      const { data } = await sendCode(phoneNumber);
+      if (data.messageId) {
+         navigation.navigate('VerifyCode', {phoneNumber});
+      }
+   } catch (error) {
+      console.log(error)
+   }
+  }
+
   return (
     <View
       style={tw.style(theme === 'light' ? 'bg-white' : 'bg-neutral-950', {
@@ -34,7 +59,7 @@ function Start({navigation}: StartProps) {
           label={'Mobile Phone Number'}
         />
         <Button
-          onPress={() => navigation.navigate('SignUp')}
+          onPress={async () => /* navigation.navigate('SignUp') */await handleEnterCode()}
           appearance="Filled"
           disabled={!PhoneNumber(phoneNumber, 'US')?.isValid()}
           label="Send Code"

@@ -1,4 +1,4 @@
 import Start from './Start';
-import SignUp from './Authentication/SignUp';
+import VerifyCode from './Authentication/VerifyCode';
 
-export {Start, SignUp};
+export {Start, VerifyCode};
