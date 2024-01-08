@@ -2,7 +2,6 @@ import React from 'react';
 
 import {SignUp, Start} from './app/screens';
 import tailwind, {useDeviceContext} from 'twrnc';
-import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './@types/navigation.type';

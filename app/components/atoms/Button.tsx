@@ -24,6 +24,7 @@ function Button({
   icon,
   appearance = 'Filled',
   loading = false,
+  disabled,
   children,
   ...props
 }: IButtonProps) {
@@ -89,7 +90,10 @@ function Button({
   };
 
   return (
-    <TouchableOpacity {...props}>
+    <TouchableOpacity
+      {...props}
+      disabled={disabled}
+      style={{opacity: disabled ? 0.5 : 1}}>
       <View
         style={[
           styles.container,

@@ -15,7 +15,7 @@ function WelcomeHeader() {
           'rgba(255, 255, 255, 0.3)',
           'rgba(120, 44, 243, 0.05)',
         ]
-      : ['rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 0.3)', 'rgba(154, 93, 253, 0.05)'];
+      : ['rgba(9, 9, 9, 1)', 'rgba(27, 27, 27, 1)'];
 
   return (
     <LinearGradient style={{height: '40%'}} colors={colors}>

@@ -7,10 +7,12 @@ import {
   StyleSheet,
   useColorScheme,
   ImageSourcePropType,
+  SafeAreaView,
 } from 'react-native';
 
-import logo from './../../assets/images/logo-padding.png';
 import tailwind from 'twrnc';
+import {BackButton} from '..';
+import {useNavigation} from '@react-navigation/native';
 
 type IOnboardingHeaderProps = {
   showBackButton?: Boolean;
@@ -26,7 +28,7 @@ function OnboardingHeader({
   title,
 }: IOnboardingHeaderProps) {
   const theme = useColorScheme();
-
+  const navigate = useNavigation();
   const colors =
     theme === 'light'
       ? [
@@ -34,7 +36,7 @@ function OnboardingHeader({
           'rgba(255, 255, 255, 0.3)',
           'rgba(120, 44, 243, 0.05)',
         ]
-      : ['rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 0.3)', 'rgba(154, 93, 253, 0.05)'];
+      : ['rgba(9, 9, 9, 1)', 'rgba(27, 27, 27, 1)'];
 
   return (
     <LinearGradient style={{height: '40%'}} colors={colors}>
@@ -42,19 +44,35 @@ function OnboardingHeader({
         {image && (
           <Image resizeMode="contain" style={style.image} source={image} />
         )}
-        <View style={[style.textContainer]}>
-          <Text
+        <SafeAreaView>
+          <View
             style={[
-              style.text,
-              tailwind.style('text-purple-900 dark:text-purple-100'),
+              style.stack,
+              {justifyContent: showBackButton ? 'space-between' : 'flex-end'},
             ]}>
-            {title}
-          </Text>
-          <Text
-            style={[tailwind.style('text-purple-900 dark:text-purple-100')]}>
-            {description}
-          </Text>
-        </View>
+            {showBackButton && <BackButton onPress={() => navigate.goBack()} />}
+
+            <View style={[style.textContainer]}>
+              <Text
+                style={[
+                  style.text,
+                  tailwind.style(
+                    theme === 'light' ? 'text-purple-900' : 'text-purple-300',
+                  ),
+                ]}>
+                {title}
+              </Text>
+              <Text
+                style={[
+                  tailwind.style(
+                    theme === 'light' ? 'text-purple-900' : 'text-purple-300',
+                  ),
+                ]}>
+                {description}
+              </Text>
+            </View>
+          </View>
+        </SafeAreaView>
       </View>
     </LinearGradient>
   );
@@ -72,14 +90,17 @@ const style = StyleSheet.create({
     shadowRadius: 10.0,
   },
   text: {
-    //fontFamily: 'FugazOne-Regular',
     fontSize: 36,
     fontWeight: '800',
     color: '#2A0F96',
   },
   textContainer: {
-    paddingHorizontal: 16,
     paddingBottom: 24,
+  },
+  stack: {
+    flex: 1,
+    paddingHorizontal: 16,
+    justifyContent: 'space-between',
   },
   container: {
     flex: 1,

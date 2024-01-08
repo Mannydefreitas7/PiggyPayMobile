@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
+  TextInputProps,
 } from 'react-native';
 
 import {
@@ -21,7 +22,7 @@ import {
 import MaskInput, {Masks} from 'react-native-mask-input';
 import tailwind from 'twrnc';
 
-type InputProps = {
+interface InputProps extends TextInputProps {
   leading?: ReactNode;
   trailing?: ReactNode;
   type: InputModeOptions | undefined;
@@ -29,16 +30,17 @@ type InputProps = {
   hintLink?: string;
   error?: Boolean;
   label: string;
-};
+}
 
 function Input({
   type,
   label,
   error = false,
+  value,
+  onChangeText,
   hintMessage,
   hintLink,
 }: InputProps) {
-  const [text, onChangeText] = React.useState('');
   const [focus, setFocus] = React.useState(Boolean);
   const animatedValue = useRef(new Animated.Value(0));
   const theme = useColorScheme();
@@ -109,7 +111,7 @@ function Input({
   };
 
   const onBlur = () => {
-    if (!text) {
+    if (!value) {
       setFocus(false);
       Animated.timing(animatedValue?.current, {
         toValue: 0,
@@ -164,18 +166,20 @@ function Input({
             ]}>
             <MaskInput
               inputMode={type}
+              autoComplete="tel"
               mask={focus && type === 'tel' ? Masks.USA_PHONE : undefined}
               onChangeText={onChangeText}
-              value={text}
+              value={value}
               style={[
-                tailwind.style('text-black dark:text-white'),
+                tailwind.style(theme === 'light' ? 'text-black' : 'text-white'),
                 {flexGrow: 1},
               ]}
               onBlur={onBlur}
               onFocus={onFocus}
             />
-            {text && text.length > 0 && (
-              <TouchableOpacity onPress={() => onChangeText('')}>
+            {value && value.length > 0 && (
+              <TouchableOpacity
+                onPress={() => onChangeText && onChangeText('')}>
                 <XmarkCircleSolid opacity={0.3} />
               </TouchableOpacity>
             )}
