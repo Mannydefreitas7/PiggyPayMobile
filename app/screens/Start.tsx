@@ -19,17 +19,6 @@ function Start({navigation}: StartProps) {
 
   const [phoneNumber, setPhoneNumber] = useState<string>('');
 
-  const fetch = useCallback(async () => {
-      const user = await supabase.auth.getUser();
-      console.log(user);
-  },[])
-
-  useEffect(() => {
-
-   fetch();
-
-  })
-
   const handleEnterCode = async () => {
    try {
       const { data } = await sendCode(phoneNumber);
