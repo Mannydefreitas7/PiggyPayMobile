@@ -30,6 +30,7 @@ interface InputProps extends TextInputProps {
   hintLink?: string;
   error?: Boolean;
   label: string;
+  onReset?: () => void;
 }
 
 function Input({
@@ -37,9 +38,12 @@ function Input({
   label,
   error = false,
   value,
+  onReset,
   onChangeText,
   hintMessage,
+  trailing,
   hintLink,
+  ...props
 }: InputProps) {
   const [focus, setFocus] = React.useState(Boolean);
   const animatedValue = useRef(new Animated.Value(0));
@@ -138,6 +142,7 @@ function Input({
           style={[
             styles.wrapper,
             viewStyles,
+
             tailwind.style(
               focus
                 ? 'border-purple-600 dark:border-purple-400'
@@ -167,6 +172,7 @@ function Input({
             <MaskInput
               inputMode={type}
               autoComplete="tel"
+              autoCapitalize={props.autoCapitalize}
               mask={focus && type === 'tel' ? Masks.USA_PHONE : undefined}
               onChangeText={onChangeText}
               value={value}
@@ -179,10 +185,16 @@ function Input({
             />
             {value && value.length > 0 && (
               <TouchableOpacity
-                onPress={() => onChangeText && onChangeText('')}>
+                onPress={() => {
+                  if (onChangeText && onReset) {
+                    onChangeText('');
+                    onReset();
+                  }
+                }}>
                 <XmarkCircleSolid opacity={0.3} />
               </TouchableOpacity>
             )}
+            {trailing && <View style={{marginLeft: 3}}>{trailing}</View>}
           </View>
         </Animated.View>
         {hintMessage && (

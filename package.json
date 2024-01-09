@@ -5,12 +5,14 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "generate:types": "npx supabase gen types typescript --project-id kkfkkwomzenzhcovscpx --schema public > @types/supabase.ts",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@supabase/supabase-js": "^2.39.2",
@@ -45,7 +47,8 @@
     "prettier": "2.8.8",
     "react-native-dotenv": "^3.4.9",
     "react-test-renderer": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "supabase": "1.127.4"
   },
   "engines": {
     "node": ">=18"

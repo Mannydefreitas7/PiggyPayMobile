@@ -36,13 +36,13 @@ function WelcomeHeader() {
 const style = StyleSheet.create({
   image: {
     height: 180,
-    shadowColor: '#782CF3',
-    shadowOffset: {
-      width: 5,
-      height: 3,
-    },
-    shadowOpacity: 0.4,
-    shadowRadius: 10.0,
+    // shadowColor: '#782CF3',
+    // shadowOffset: {
+    //   width: 5,
+    //   height: 3,
+    // },
+    // shadowOpacity: 0.4,
+    // shadowRadius: 10.0,
   },
   text: {
     fontFamily: 'FugazOne-Regular',

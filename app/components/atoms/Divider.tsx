@@ -18,7 +18,7 @@ function Divider({label, width = 1.5}: IDividerProps) {
     />
   );
   return (
-    <View style={[styles.container, {minHeight: label ? 24 : 0}]}>
+    <View style={[styles.container, {height: label ? 24 : 0}]}>
       {renderLine()}
       {label && (
         <Text

@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
-import {Text, View, useColorScheme} from 'react-native';
+import React, {useState} from 'react';
+import {View, useColorScheme} from 'react-native';
 import {Button, Input, OnboardingHeader} from '../../components';
 import tailwind from 'twrnc';
 import {ArrowRight} from 'iconoir-react-native';
-import { verifyOTP } from '../../services/authentication.service';
-import { VerifyCodeProps } from '../../../@types/navigation.type';
-import supabase from '../../lib/supabase';
+import {verifyOTP} from '../../services/authentication.service';
+import {VerifyCodeProps} from '../../../@types/navigation.type';
 
-function VerifyCode({ navigation, route }: VerifyCodeProps) {
+function VerifyCode({navigation, route}: VerifyCodeProps) {
   const theme = useColorScheme();
   const [code, setCode] = useState<string>('');
 
   const verify = async () => {
-      try {
-         const res = await verifyOTP(code, route.params.phoneNumber);
-         console.log(res.data.user?.id)
-      } catch (error) {
-         console.log(error)
-      }
-  }
+    try {
+      const res = await verifyOTP(code, route.params.phoneNumber);
+      // AsyncStorage.setItem('authenticated', JSON.stringify(res.data.user?.aud));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View
       style={tailwind.style(theme === 'light' ? 'bg-white' : 'bg-neutral-950', {
@@ -38,8 +37,12 @@ function VerifyCode({ navigation, route }: VerifyCodeProps) {
           value={code}
           onChangeText={setCode}
         />
-        <Button appearance="Filled" label="Enter" icon={<ArrowRight />} onPress={async () =>await verify()}/>
-        
+        <Button
+          appearance="Filled"
+          label="Enter"
+          icon={<ArrowRight />}
+          onPress={async () => await verify()}
+        />
       </View>
     </View>
   );

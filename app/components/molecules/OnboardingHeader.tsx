@@ -96,10 +96,12 @@ const style = StyleSheet.create({
   },
   textContainer: {
     paddingBottom: 24,
+    gap: 8,
   },
   stack: {
     flex: 1,
     paddingHorizontal: 16,
+    maxWidth: '70%',
     justifyContent: 'space-between',
   },
   container: {
