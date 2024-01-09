@@ -68,7 +68,7 @@ function SignInScreen({navigation}: SignInrops) {
           />
           <Button
             onPress={async () =>
-              /* navigation.navigate('SignUp') */ await handleEnterCode()
+              await handleEnterCode()
             }
             loading={phoneLoading}
             appearance="Filled"

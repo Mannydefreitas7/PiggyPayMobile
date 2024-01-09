@@ -1,6 +1,7 @@
 import {PostgrestError} from '@supabase/supabase-js';
 import {Tables} from '../../@types/database.type';
 import supabase from '../lib/supabase';
+import {ISignUpUser} from '../../@types/user.type';
 
 class UserRepository {
   async getUser(id: string): Promise<{
@@ -32,11 +33,17 @@ class UserRepository {
     };
   }
 
-  async addUser(user: Tables<'User'>): Promise<{
-    user: Tables<'User'> | null;
+  async addUser(user: ISignUpUser): Promise<{
+    user: ISignUpUser | null;
     error: PostgrestError | null;
   }> {
-    const {data, error} = await supabase.from('User').insert([user]);
+    const {data, error} = await supabase.from('User').insert({
+      first_name: user.firstName,
+      user_id: user.userId,
+      last_name: user.lastName,
+      email: user.email,
+      phone_number: user.phoneNumber,
+    });
     if (error) {
       return {
         error,

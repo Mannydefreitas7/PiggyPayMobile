@@ -14,14 +14,10 @@ import userRespository from '../../repositories/user.repository';
 import {SignUpProps} from '../../../@types/navigation.type';
 import * as EmailValidator from 'email-validator';
 import { generateFromEmail } from '../../utils';
+import { ISignUpUser } from '../../../@types/user.type';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type ISignUpUser = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  username?: string;
-  userId: string;
-};
+
 
 function SignUpScreen({navigation, route}: SignUpProps) {
   const theme = useColorScheme();
@@ -29,6 +25,8 @@ function SignUpScreen({navigation, route}: SignUpProps) {
   const {userId} = route.params;
   const [user, setUser] = useState<ISignUpUser>({userId});
   const [checking, setChecking] = useState<Boolean>(false);
+  const [adding, setAdding] = useState<Boolean>(false);
+  
   const [errors, setErrors] = useState<ISignUpUser>({userId: '' });
 
   const checkIfAlreadyExits = useCallback(async (text: string) => {
@@ -81,13 +79,50 @@ function SignUpScreen({navigation, route}: SignUpProps) {
    }
   }, [user.email]);
 
+  const isFormValid = (): Boolean => {
+   if (user.email && user.firstName && user.lastName && user.username) {
+      if (EmailValidator.validate(user.email) && user.firstName.length > 1 && user.lastName.length > 0 && user.username.length > 3) {
+         return true
+      }
+   }
+   return false;
+  }
+
+  const signUp = async () => {
+   setAdding(true);
+   try {
+      const phoneNumber = await AsyncStorage.getItem('phone');
+      const res = await userRespository.addUser({
+         ...user,
+         phoneNumber: phoneNumber ?? undefined
+       })
+       if (res.error) {
+         console.log(res.error.message);
+         setAdding(false);
+         return;
+       }
+
+       if (res.user) {
+         // Succes!!
+         console.log('success!')
+         setAdding(false);
+         navigation.navigate('Main');
+         return
+      
+       }
+
+   } catch (error) {
+      console.log(error)
+   }
+  }
+
   const renderUserNameTrailing = () => {
     if (checking) {
       return <LoadingSpinner color="red" />;
     }
 
     if (!checking && user.username && user.username.length > 3) {
-      return <Check color={'green'} strokeWidth={2} />;
+      return <Check color={'purple'} strokeWidth={2} />;
     }
   };
 
@@ -120,8 +155,18 @@ function SignUpScreen({navigation, route}: SignUpProps) {
           </Text>
           <View style={{ gap: 12, marginTop: 20 }}>
             
-            <Input label="First Name" type="text" />
-            <Input label="Last Name" type="text" />
+            <Input value={user.firstName} onChangeText={text => {
+                  setUser({
+                     ...user,
+                     firstName: text,
+                  });
+               }} label="First Name" type="text" />
+            <Input value={user.lastName} onChangeText={text => {
+                  setUser({
+                     ...user,
+                     lastName: text,
+                  });
+               }} label="Last Name" type="text" />
             <Divider width={2} label='Account' />
             <Input 
                label="Email" 
@@ -163,7 +208,7 @@ function SignUpScreen({navigation, route}: SignUpProps) {
             />
           </View>
           <View style={{paddingVertical: 32}}>
-            <Button appearance="Filled" label="Enter" icon={<ArrowRight />} />
+            <Button loading={adding} disabled={!isFormValid()} onPress={async () => await signUp()} appearance="Filled" label="Sign Up" icon={<ArrowRight />} />
           </View>
         </View>
          </ScrollView>

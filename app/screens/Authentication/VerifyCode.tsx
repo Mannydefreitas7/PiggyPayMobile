@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import {ScrollView, TouchableOpacity, Text, View, useColorScheme, StyleSheet} from 'react-native';
-import {Button, Input, NavigationBar, OnboardingHeader} from '../../components';
+import {Button, Input, LoadingSpinner, NavigationBar, OnboardingHeader} from '../../components';
 import tailwind, { style } from 'twrnc';
 import {ArrowRight} from 'iconoir-react-native';
-import {verifyOTP} from '../../services/authentication.service';
+import {sendCode, verifyOTP} from '../../services/authentication.service';
 import {VerifyCodeProps} from '../../../@types/navigation.type';
 import { isNumericInputValid } from '../../utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import supabase from '../../lib/supabase';
 
 function VerifyCode({navigation, route}: VerifyCodeProps) {
   const theme = useColorScheme();
@@ -14,6 +16,7 @@ function VerifyCode({navigation, route}: VerifyCodeProps) {
   const [resendLoading, setResendLoading] = useState<Boolean>(false);
   const [offset, setOffset] = useState<number>(0);
   const [error, setError] = useState<string>();
+
   const verify = async () => {
    setLoading(true);
     try {
@@ -30,13 +33,25 @@ function VerifyCode({navigation, route}: VerifyCodeProps) {
     }
   };
 
+
+  const resend = async () => {
+
+   setResendLoading(true);
+
+      const { data, error } = await sendCode(route.params.phoneNumber);
+      if (error) setError(error.message);
+      setResendLoading(false)
+      setError(undefined);
+
+  }
+
   const renderHintMessage = () => (
        <View style={[ styles.hintContainer, { flexDirection: 'row' }]}>
                   <Text style={styles.hintText}>
                      {error ? error : 'Didn’t receive any code yet?'}
                   </Text>
                <TouchableOpacity>
-                     <Text style={{ color: 'blue' }}>
+                     <Text style={{ color: 'blue' }} onPress={resend}>
                         Resend
                      </Text>
                </TouchableOpacity>
@@ -69,11 +84,11 @@ function VerifyCode({navigation, route}: VerifyCodeProps) {
           error={error != undefined}
           onReset={() => setError(undefined)}
           onChangeText={setCode}
-          
+          trailing={resendLoading && <LoadingSpinner color='blue' />}
         />
         <Button
          loading={loading}
-          disabled={isNumericInputValid(code)}
+          disabled={!isNumericInputValid(code)}
           appearance="Filled"
           label="Enter"
           icon={<ArrowRight />}
