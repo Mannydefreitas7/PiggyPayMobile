@@ -6,9 +6,11 @@ import AuthProviderButton from './molecules/AuthProviderButton';
 import Divider from './atoms/Divider';
 import LoadingSpinner from './atoms/Spinner';
 import BackButton from './molecules/BackButton';
+import NavigationBar from './molecules/NavigationBar';
 
 export {
   WelcomeHeader,
+  NavigationBar,
   BackButton,
   Input,
   OnboardingHeader,

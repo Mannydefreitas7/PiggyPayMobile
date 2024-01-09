@@ -23,7 +23,7 @@ function SignInScreen({navigation}: SignInrops) {
   const theme = useColorScheme();
 
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [scrolling, setScrolling] = useState<Boolean>(false);
+  const [offset, setOffset] = useState<number>(0);
 
   const handleEnterCode = async () => {
     try {
@@ -41,16 +41,17 @@ function SignInScreen({navigation}: SignInrops) {
       style={tw.style(theme === 'light' ? 'bg-white' : 'bg-neutral-950', {
         flex: 1,
       })}>
-      <WelcomeHeader />
-      <Animated.View style={{opacity: scrolling ? 0.8 : 0}}>
-        <Divider width={1} />
-      </Animated.View>
+     
+      
 
       <ScrollView
-        scrollEventThrottle={100}
-        onScroll={event =>
-          setScrolling(event.nativeEvent.contentOffset.y > 10)
+        scrollEventThrottle={8}
+        
+        onScroll={event => {
+         setOffset(event.nativeEvent.contentOffset.y);
+        }
         }>
+          <WelcomeHeader offset={offset} />
         <View style={styles.container}>
           <Input
             error={false}

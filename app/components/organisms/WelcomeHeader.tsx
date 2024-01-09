@@ -1,35 +1,35 @@
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Image, Text, View, StyleSheet, useColorScheme} from 'react-native';
-
+import {Image, Text, View, StyleSheet, useColorScheme, Animated} from 'react-native';
 import logo from './../../assets/images/logo-padding.png';
 import tailwind from 'twrnc';
 
-function WelcomeHeader() {
+function WelcomeHeader({offset}: {offset: number}) {
   const theme = useColorScheme();
 
   const colors =
     theme === 'light'
       ? [
           'rgba(255, 255, 255, 1)',
-          'rgba(255, 255, 255, 0.3)',
-          'rgba(120, 44, 243, 0.05)',
+          'rgba(242, 234, 254, 0.8)',
         ]
       : ['rgba(9, 9, 9, 1)', 'rgba(27, 27, 27, 1)'];
 
   return (
-    <LinearGradient style={{height: '40%'}} colors={colors}>
-      <View style={style.container}>
-        <Image resizeMode="contain" style={style.image} source={logo} />
-        <Text
-          style={[
+   <Animated.View >
+      <LinearGradient style={{ height: 320, overflow: 'visible' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.9 }} colors={colors}>
+      <View style={[style.container, {transform: [{scale: 1 - (offset / 300)}], transformOrigin: 'bottom'}]} >
+      <Image resizeMode="contain" style={style.image} source={logo} />
+      <Text
+         style={[
             style.text,
             tailwind.style('text-purple-900 dark:text-purple-100'),
-          ]}>
-          Buddle
-        </Text>
+         ]}>
+         Buddle
+      </Text>
       </View>
-    </LinearGradient>
+   </LinearGradient>
+      </Animated.View>
   );
 }
 
@@ -50,8 +50,10 @@ const style = StyleSheet.create({
     color: '#2A0F96',
   },
   container: {
-    height: '100%',
-    justifyContent: 'center',
+    //height: '100%',
+    flex: 1,
+    paddingVertical: 24,
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 });

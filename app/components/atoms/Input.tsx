@@ -41,6 +41,7 @@ function Input({
   onReset,
   onChangeText,
   hintMessage,
+  leading,
   trailing,
   hintLink,
   ...props
@@ -67,18 +68,22 @@ function Input({
       {
         translateY: animatedValue?.current?.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -40],
+          outputRange: [0, -12],
           extrapolate: 'clamp',
         }),
       },
       {
         translateX: animatedValue?.current?.interpolate({
           inputRange: [0, 1],
-          outputRange: [renderIcon() ? 40 : 8, 12],
+          outputRange: [renderIcon() ? 40 : 16, renderIcon() ? 40 : 12],
           extrapolate: 'clamp',
         }),
       },
     ],
+    fontSize: animatedValue?.current?.interpolate({
+      inputRange: [0, 1],
+      outputRange: [14, 10],
+    }),
     color: animatedValue?.current?.interpolate({
       inputRange: [0, 1],
       outputRange: ['#000000', '#782CF3'],
@@ -87,11 +92,14 @@ function Input({
       inputRange: [0, 1],
       outputRange: [0.5, 1],
     }),
-    fontWeight: animatedValue?.current?.interpolate({
-      inputRange: [0, 1],
-      outputRange: [400, 700],
-    }),
   };
+
+  const inputStyles = {
+      paddingTop: animatedValue?.current?.interpolate({
+         inputRange: [0, 1],
+         outputRange: [0, 14],
+       }),
+  }
 
   const viewStyles = {
     borderColor: animatedValue?.current?.interpolate({
@@ -142,7 +150,6 @@ function Input({
           style={[
             styles.wrapper,
             viewStyles,
-
             tailwind.style(
               focus
                 ? 'border-purple-600 dark:border-purple-400'
@@ -163,10 +170,11 @@ function Input({
             {label}
           </Animated.Text>
           {renderIcon() && <View style={styles.leading}>{renderIcon()}</View>}
-          <View
+          <Animated.View
             style={[
               styles.textStyle,
               styles.inputContainer,
+              inputStyles,
               {paddingLeft: renderIcon() ? 40 : 12},
             ]}>
             <MaskInput
@@ -183,19 +191,22 @@ function Input({
               onBlur={onBlur}
               onFocus={onFocus}
             />
+            <View  style={{ flexDirection: 'row', gap: 4, position: 'absolute', right: 12 }}>
             {value && value.length > 0 && (
               <TouchableOpacity
+                  
                 onPress={() => {
-                  if (onChangeText && onReset) {
-                    onChangeText('');
-                    onReset();
+                  if (onChangeText) onChangeText('');
+                  if (onReset) onReset();
                   }
-                }}>
+                }>
                 <XmarkCircleSolid opacity={0.3} />
               </TouchableOpacity>
             )}
-            {trailing && <View style={{marginLeft: 3}}>{trailing}</View>}
-          </View>
+            {trailing && <View >{trailing}</View>}
+            </View>
+            
+          </Animated.View>
         </Animated.View>
         {hintMessage && (
           <View style={styles.hintContainer}>
@@ -225,7 +236,7 @@ function Input({
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    marginTop: 32,
+   // marginTop: 32,
   },
   leading: {
     position: 'absolute',
@@ -236,8 +247,9 @@ const styles = StyleSheet.create({
     width: 32,
   },
   wrapper: {
-    height: 48,
+    height: 52,
     borderWidth: 1,
+
     justifyContent: 'center',
     borderRadius: 6,
   },

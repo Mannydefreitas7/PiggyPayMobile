@@ -15,31 +15,29 @@ import {BackButton} from '..';
 import {useNavigation} from '@react-navigation/native';
 
 type IOnboardingHeaderProps = {
-  showBackButton?: Boolean;
   image?: ImageSourcePropType | undefined;
   title?: string;
+  offset: number;
   description?: string;
 };
 
 function OnboardingHeader({
   image,
   description,
-  showBackButton,
+  offset,
   title,
 }: IOnboardingHeaderProps) {
   const theme = useColorScheme();
-  const navigate = useNavigation();
   const colors =
     theme === 'light'
       ? [
           'rgba(255, 255, 255, 1)',
-          'rgba(255, 255, 255, 0.3)',
-          'rgba(120, 44, 243, 0.05)',
+          'rgba(242, 234, 254, 0.8)',
         ]
       : ['rgba(9, 9, 9, 1)', 'rgba(27, 27, 27, 1)'];
 
   return (
-    <LinearGradient style={{height: '40%'}} colors={colors}>
+    <LinearGradient style={{ height: 260, overflow: 'visible' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.9 }}  colors={colors}>
       <View style={style.container}>
         {image && (
           <Image resizeMode="contain" style={style.image} source={image} />
@@ -48,9 +46,8 @@ function OnboardingHeader({
           <View
             style={[
               style.stack,
-              {justifyContent: showBackButton ? 'space-between' : 'flex-end'},
+              {position: 'relative', justifyContent: 'flex-end'},
             ]}>
-            {showBackButton && <BackButton onPress={() => navigate.goBack()} />}
 
             <View style={[style.textContainer]}>
               <Text
@@ -81,13 +78,6 @@ function OnboardingHeader({
 const style = StyleSheet.create({
   image: {
     height: 180,
-    shadowColor: '#782CF3',
-    shadowOffset: {
-      width: 5,
-      height: 3,
-    },
-    shadowOpacity: 0.4,
-    shadowRadius: 10.0,
   },
   text: {
     fontSize: 36,

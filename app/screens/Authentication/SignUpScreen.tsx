@@ -6,53 +6,83 @@ import {
   Divider,
   Input,
   LoadingSpinner,
+  NavigationBar,
   OnboardingHeader,
 } from '../../components';
 import {ArrowRight, Check} from 'iconoir-react-native';
 import userRespository from '../../repositories/user.repository';
 import {SignUpProps} from '../../../@types/navigation.type';
+import { generateFromEmail } from "unique-username-generator";
+import * as EmailValidator from 'email-validator';
 
 type ISignUpUser = {
   firstName?: string;
   lastName?: string;
+  email?: string;
   username?: string;
   userId: string;
 };
 
-function SignUpScreen({route}: SignUpProps) {
+function SignUpScreen({navigation, route}: SignUpProps) {
   const theme = useColorScheme();
-  const [scrolling, setScrolling] = useState<Boolean>(false);
+  const [offset, setOffset] = useState<number>(0);
   const {userId} = route.params;
   const [user, setUser] = useState<ISignUpUser>({userId});
   const [checking, setChecking] = useState<Boolean>(false);
-  const [error, setError] = useState<string>();
+  const [errors, setErrors] = useState<ISignUpUser>({userId: '' });
 
   const checkIfAlreadyExits = useCallback(async (text: string) => {
     const alreadyExists = await userRespository.checkIfAlreadyTaken(text);
     if (alreadyExists) {
-      setError('Oops! Username is already taken.');
+      setErrors({
+         ...errors,
+         username: 'Oops! Username is already taken.'
+      });
     } else {
       setChecking(false);
     }
   }, []);
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      if (user && user.username && user.username.length > 3) {
-        setChecking(true);
-        checkIfAlreadyExits(user.username ?? '');
-      }
-    }, 500);
+   if (user.username && user.username.length > 3) {
+      setChecking(true);
+      const timeOutId = setTimeout(() => {
+           checkIfAlreadyExits(user.username ?? '');
+       }, 500);
+       return () => clearTimeout(timeOutId);
+   } else {
+      setChecking(false)
+   }
+  }, [user.username, checkIfAlreadyExits]);
 
-    return () => clearTimeout(timeOutId);
-  }, [user, checkIfAlreadyExits]);
+  useEffect(() => {
+   if (user.email && user.email.length > 3) {
+      const isValid = EmailValidator.validate(user.email);
+      if (!isValid) {
+         setErrors({
+            ...errors,
+            email: "Email format is not valid."
+         })
+
+         setUser({
+            ...user,
+            username: generateFromEmail(user.email)
+         })
+      } 
+   } else {
+      setErrors({
+         ...errors,
+         email: undefined
+      })
+   }
+  }, [user.email]);
 
   const renderUserNameTrailing = () => {
     if (checking) {
       return <LoadingSpinner color="red" />;
     }
 
-    if (!checking && user.username && user.username.length > 4) {
+    if (!checking && user.username && user.username.length > 3) {
       return <Check color={'green'} strokeWidth={2} />;
     }
   };
@@ -61,22 +91,18 @@ function SignUpScreen({route}: SignUpProps) {
     <View
       style={tailwind.style(theme === 'light' ? 'bg-white' : 'bg-neutral-950', {
         flex: 1,
+        position: 'relative'
       })}>
-      <OnboardingHeader
+         <NavigationBar offset={offset} showBackButton={true} navigate={navigation} />
+         <ScrollView contentInsetAdjustmentBehavior="automatic" automaticallyAdjustKeyboardInsets={true} scrollEventThrottle={100} onScroll={event =>
+          setOffset(event.nativeEvent.contentOffset.y)
+        }>
+         <OnboardingHeader
+         offset={offset}
         title="Looks like you are new."
-        showBackButton
         description="We can’t find a profile registered with this account."
       />
-      <Animated.View style={{opacity: scrolling ? 0.8 : 0}}>
-        <Divider width={1} />
-      </Animated.View>
-
-      <ScrollView
-        scrollEventThrottle={100}
-        onScroll={event =>
-          setScrolling(event.nativeEvent.contentOffset.y > 10)
-        }>
-        <View style={[{paddingHorizontal: 24, paddingTop: 12}]}>
+      <View style={[{paddingHorizontal: 24, paddingTop: 12}]}>
           <Text
             style={{
               fontSize: 40,
@@ -88,10 +114,26 @@ function SignUpScreen({route}: SignUpProps) {
             }}>
             Sign up
           </Text>
-          <View style={[{gap: 2}]}>
+          <View style={{ gap: 12, marginTop: 20 }}>
+            
+            <Input label="First Name" type="text" />
+            <Input label="Last Name" type="text" />
+            <Divider width={2} label='Account' />
+            <Input 
+               label="Email" 
+               type="email"
+               error={errors.email != undefined}
+               hintMessage={errors.email}
+               value={user.email}
+               onChangeText={text => {
+                  setUser({
+                     ...user,
+                     email: text.replace(/\s/g, ''),
+                  });
+               }} />
             <Input
-              error={error !== undefined}
-              hintMessage={error}
+              error={errors.username !== undefined}
+              hintMessage={errors.username}
               label="Username"
               type="text"
               value={user?.username ?? ''}
@@ -100,23 +142,25 @@ function SignUpScreen({route}: SignUpProps) {
               trailing={renderUserNameTrailing()}
               onReset={() => {
                 setChecking(false);
-                setError(undefined);
+                setErrors({
+                  ...errors,
+                  username: undefined
+                });
               }}
               onChangeText={text => {
                 setUser({
                   ...user,
-                  username: text,
+                  username: text.replace(/\s/g, '').replace(/[^\w\s]/gi, ""),
                 });
               }}
+              leading={<Text>Test</Text>}
             />
-            <Input label="First Name" type="text" />
-            <Input label="Last Name" type="text" />
           </View>
-          <View style={{paddingVertical: 18}}>
+          <View style={{paddingVertical: 32}}>
             <Button appearance="Filled" label="Enter" icon={<ArrowRight />} />
           </View>
         </View>
-      </ScrollView>
+         </ScrollView>
     </View>
   );
 }
