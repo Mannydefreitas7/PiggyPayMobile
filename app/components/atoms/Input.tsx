@@ -1,4 +1,4 @@
-import React, {ReactNode, useRef} from 'react';
+import React, {ReactNode, useEffect, useRef} from 'react';
 import {
   View,
   InputModeOptions,
@@ -50,6 +50,14 @@ function Input({
   const animatedValue = useRef(new Animated.Value(0));
   const theme = useColorScheme();
 
+  useEffect(() => {
+
+   if (value && value.length > 1) {
+      animatedValue.current.setValue(1);
+   }
+
+  }, [value])
+
   const renderIcon = () => {
     switch (type) {
       case 'email':
@@ -62,6 +70,8 @@ function Input({
         return undefined;
     }
   };
+
+  
 
   const returnAnimatedTitleStyles = {
     transform: [

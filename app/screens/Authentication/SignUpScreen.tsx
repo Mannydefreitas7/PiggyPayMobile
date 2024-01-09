@@ -12,8 +12,8 @@ import {
 import {ArrowRight, Check} from 'iconoir-react-native';
 import userRespository from '../../repositories/user.repository';
 import {SignUpProps} from '../../../@types/navigation.type';
-import { generateFromEmail } from "unique-username-generator";
 import * as EmailValidator from 'email-validator';
+import { generateFromEmail } from '../../utils';
 
 type ISignUpUser = {
   firstName?: string;
@@ -63,12 +63,16 @@ function SignUpScreen({navigation, route}: SignUpProps) {
             ...errors,
             email: "Email format is not valid."
          })
-
+      } else {
+         setErrors({
+            ...errors,
+            email: undefined
+         })
          setUser({
             ...user,
-            username: generateFromEmail(user.email)
+            username: generateFromEmail(user.email, 4)
          })
-      } 
+      }
    } else {
       setErrors({
          ...errors,
@@ -122,6 +126,8 @@ function SignUpScreen({navigation, route}: SignUpProps) {
             <Input 
                label="Email" 
                type="email"
+               autoCapitalize="none"
+               autoCorrect={false}
                error={errors.email != undefined}
                hintMessage={errors.email}
                value={user.email}
