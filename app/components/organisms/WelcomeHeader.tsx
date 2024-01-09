@@ -15,10 +15,14 @@ function WelcomeHeader({offset}: {offset: number}) {
         ]
       : ['rgba(9, 9, 9, 1)', 'rgba(27, 27, 27, 1)'];
 
+   const offsetScale = 1 - (offset / 300);
+   const scale = offsetScale < 0.7 ? 0.7 : offsetScale > 1.2 ? 1.2 : offsetScale;
+
+
   return (
    <Animated.View >
       <LinearGradient style={{ height: 320, overflow: 'visible' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.9 }} colors={colors}>
-      <View style={[style.container, {transform: [{scale: 1 - (offset / 300)}], transformOrigin: 'bottom'}]} >
+      <View style={[style.container, {transform: [{scale}], transformOrigin: 'bottom'}]} >
       <Image resizeMode="contain" style={style.image} source={logo} />
       <Text
          style={[

@@ -24,12 +24,16 @@ function SignInScreen({navigation}: SignInrops) {
 
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [offset, setOffset] = useState<number>(0);
+  const [phoneLoading, setPhoneLoading] = useState<Boolean>(false);
 
   const handleEnterCode = async () => {
     try {
+      setPhoneLoading(true)
       const {data} = await sendCode(phoneNumber);
       if (data.messageId) {
+         setPhoneLoading(false)
         navigation.navigate('VerifyCode', {phoneNumber});
+        
       }
     } catch (error) {
       console.log(error);
@@ -66,6 +70,7 @@ function SignInScreen({navigation}: SignInrops) {
             onPress={async () =>
               /* navigation.navigate('SignUp') */ await handleEnterCode()
             }
+            loading={phoneLoading}
             appearance="Filled"
             disabled={!PhoneNumber(phoneNumber, 'US')?.isValid()}
             label="Send Code"
@@ -86,6 +91,17 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingTop: 18,
   },
+ 
+  hintContainer: {
+   marginTop: 6,
+   gap: 4,
+   marginLeft: 8,
+   flexDirection: 'row',
+ },
+  hintText: {
+   fontSize: 14,
+   color: '#565656',
+ },
 });
 
 export default SignInScreen;

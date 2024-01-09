@@ -218,7 +218,7 @@ function Input({
             
           </Animated.View>
         </Animated.View>
-        {hintMessage && (
+        {typeof hintMessage === 'string' ? (
           <View style={styles.hintContainer}>
             <Text
               style={[
@@ -228,16 +228,9 @@ function Input({
               ]}>
               {hintMessage}
             </Text>
-            {hintLink && (
-              <TouchableOpacity>
-                <Text
-                  style={[styles.hintLink, tailwind.style('text-indigo-700')]}>
-                  {hintLink}
-                </Text>
-              </TouchableOpacity>
-            )}
+
           </View>
-        )}
+        ) : <View>{hintMessage}</View>}
       </View>
     </IconoirProvider>
   );
