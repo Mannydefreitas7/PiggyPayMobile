@@ -1,7 +1,7 @@
 import crypto from 'react-native-quick-crypto';
 
 const getRandomInt = (min: number, max: number) => {
-  const randomBuffer = (0, crypto.randomBytes)(4); // 4 bytes to generate a 32-bit integer
+  const randomBuffer = crypto.randomBytes(4); // 4 bytes to generate a 32-bit integer
   const randomInt = randomBuffer.byteLength; // Convert bytes to an unsigned 32-bit integer
   return min + (randomInt % (max - min + 1));
 };
